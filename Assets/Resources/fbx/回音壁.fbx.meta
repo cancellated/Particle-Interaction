@@ -1,69 +1,9 @@
 fileFormatVersion: 2
-guid: 5e11dacf0c14f9942bb8fccfc77d392c
+guid: 7c4fbee3171e1024aaafd5d28578cfc2
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: hangar_concrete_floor.001
-    second: {fileID: 2100000, guid: 8cb605aefef288e4789fdaa70c012568, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: plaster_brick_pattern.001
-    second: {fileID: 2100000, guid: 9d78015b6e9e7b943a24c27ebbed6f7b, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: rock_tile_floor.001
-    second: {fileID: 2100000, guid: 29e197ae8b2a78845a41e54998978ffc, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: hangar_concrete_floor_diff_1k
-    second: {fileID: 2800000, guid: dcf20e1c00d63e949931a4238e2f4106, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: hangar_concrete_floor_nor_gl_1k
-    second: {fileID: 2800000, guid: 06d5152106283cb4db324e74a4009677, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: hangar_concrete_floor_rough_1k
-    second: {fileID: 2800000, guid: c62f318319d94e74e875d78ba12c59e3, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: plaster_brick_pattern_diff_2k
-    second: {fileID: 2800000, guid: 1fa2b4e2f514e2e48ae099308e17cfc6, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: plaster_brick_pattern_nor_gl_2k
-    second: {fileID: 2800000, guid: dc6672f6f5ee3b24e99a9e26b93892a6, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: plaster_brick_pattern_rough_2k
-    second: {fileID: 2800000, guid: 0205e00f1811c3e4eaa9f966d1da1a4d, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: rock_tile_floor_diff_2k
-    second: {fileID: 2800000, guid: d077fa9ee1c55bd4fadfd44602967a32, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: rock_tile_floor_nor_gl_2k
-    second: {fileID: 2800000, guid: d3b41f08af67cb34f88f6d9ae6b4b9e8, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: rock_tile_floor_rough_2k
-    second: {fileID: 2800000, guid: fe9cdcd719562a140b25c7b4dd6502db, type: 3}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0

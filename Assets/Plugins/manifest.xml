@@ -1,0 +1,5 @@
+<configuration>
+  <capabilities>
+    <deviceCapability Name="webcam"/>
+  </capabilities>
+</configuration>

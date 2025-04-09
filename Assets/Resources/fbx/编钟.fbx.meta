@@ -3,7 +3,17 @@ guid: 3d154d2a7fa8ada49ad991ee9e6c9309
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_7276_Chime_LOD2_lambert2
+    second: {fileID: 2100000, guid: 71b14b13521866645bfa9dab0a1dd5b5, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: M_7276_Chime_LOD2_lambert2
+    second: {fileID: 2800000, guid: 92ad4d9b3557e1a4f938a704ff468c8b, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

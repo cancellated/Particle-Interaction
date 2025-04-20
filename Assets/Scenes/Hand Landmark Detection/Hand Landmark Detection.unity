@@ -260,6 +260,57 @@ MonoBehaviour:
   screen: {fileID: 1006057043}
   runningMode: 0
   _handLandmarkerResultAnnotationController: {fileID: 1006057044}
+  OnHandLandmarkerOutput:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &1348761280
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1348761282}
+  - component: {fileID: 1348761283}
+  m_Layer: 0
+  m_Name: Ctrl
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1348761282
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348761280}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1641.7383, y: 209.02808, z: -149.07922}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1348761283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348761280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d9ed4a4ba5aa9439302c81b3e06419, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handLandmarkerRunner: {fileID: 1064799468}
+  targetObject: {fileID: 1458387273}
+  moveSpeed: 5
+  gestureThreshold: 0.005
 --- !u!1001 &1427452213
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -327,7 +378,17 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
+<<<<<<< Updated upstream
   m_SourcePrefab: {fileID: 100100000, guid: a79803a268939d04a87e002932e02118, type: 3}
+=======
+  m_SourcePrefab: {fileID: 100100000, guid: 6b81b8935f6c9e942b8fa977033acc70, type: 3}
+--- !u!1 &1458387273 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6b81b8935f6c9e942b8fa977033acc70,
+    type: 3}
+  m_PrefabInstance: {fileID: 1427452213}
+  m_PrefabAsset: {fileID: 0}
+>>>>>>> Stashed changes
 --- !u!1 &1806680259
 GameObject:
   m_ObjectHideFlags: 0
@@ -860,3 +921,4 @@ SceneRoots:
   - {fileID: 420786856}
   - {fileID: 1064799461}
   - {fileID: 1427452213}
+  - {fileID: 1348761282}

@@ -7,6 +7,7 @@
 using System.Collections;
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Rendering;
 
 namespace Mediapipe.Unity.Sample.HandLandmarkDetection
@@ -17,10 +18,10 @@ namespace Mediapipe.Unity.Sample.HandLandmarkDetection
         private HandLandmarkerResultAnnotationController _handLandmarkerResultAnnotationController;
 
         private Experimental.TextureFramePool _textureFramePool;
-        internal object handLandmarkerResultEvent;
-        public readonly HandLandmarkDetectionConfig config = new HandLandmarkDetectionConfig();
 
-        public object OnHandLandmarkerOutput { get; internal set; }
+        // public UnityEvent<HandLandmarkerResult> OnHandLandmarkerOutput =
+        //     new UnityEvent<HandLandmarkerResult>();
+        public readonly HandLandmarkDetectionConfig config = new HandLandmarkDetectionConfig();
 
         public override void Stop()
         {

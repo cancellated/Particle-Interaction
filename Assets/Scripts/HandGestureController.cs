@@ -248,7 +248,7 @@ public class HandGestureController : MonoBehaviour
                 isRightHandFist = isFist;
             }
 
-            // 如果这只手没有握拳，且是主控制手（这里假设使用右手），且退出菜单未打开，则处理移动逻辑
+            // 如果这只手没有握拳，且是右手，且退出菜单未打开，则处理移动逻辑
             if (!isFist && handedness.ToLower() == "right" && !exitGameMenu.exitMenuUI.activeSelf)
             {
                 ProcessHandMovement(landmarks, handIndex == 0);
@@ -285,12 +285,12 @@ public class HandGestureController : MonoBehaviour
                     canTriggerNextAction = false;
                 }
             }
-            else if ((isLeftHandFist || isRightHandFist) && canTriggerNextAction)
+            else if (isRightHandFist && canTriggerNextAction)
             {
                 singleFistTimer += deltaTime;
                 if (singleFistTimer >= SINGLE_FIST_THRESHOLD)
                 {
-                    Debug.Log("检测到单手握拳，重置游戏");
+                    Debug.Log("检测到右手握拳，重置游戏");
                     exitGameMenu.ResetTargetPosition();
                     singleFistTimer = 0f;
                     waitForHandsRelease = true;

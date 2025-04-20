@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Mediapipe.Tasks.Vision.Core;
 using Mediapipe.Tasks.Vision.HandLandmarker;
@@ -22,6 +23,9 @@ public class HandGestureController : MonoBehaviour
 
     [SerializeField]
     private float movementThreshold = 0.0005f; // 移动阈值
+
+    [SerializeField]
+    private ExitGameMenu exitGameMenu; // 退出菜单引用
 
     [SerializeField]
     private Camera mainCamera;
@@ -48,6 +52,16 @@ public class HandGestureController : MonoBehaviour
     private float previousPalmSize;
     private bool isFirstFrame = true;
     private Stopwatch stopwatch;
+
+    private bool isLeftHandFist = false;
+    private bool isRightHandFist = false;
+    private float doubleFistTimer = 0f;
+    private const float DOUBLE_FIST_THRESHOLD = 0.5f; // 双手握拳持续时间阈值
+    private float singleFistTimer = 0f;
+    private const float SINGLE_FIST_THRESHOLD = 0.5f; // 单手握拳持续时间阈值
+    private float lastProcessTime;
+    private bool waitForHandsRelease = false; // 等待手势释放
+    private bool canTriggerNextAction = true; // 是否可以触发下一个动作
 
     private void Start()
     {
@@ -94,12 +108,14 @@ public class HandGestureController : MonoBehaviour
                 modelAssetBuffer: handLandmarkerModel.bytes
             ),
             runningMode: RunningMode.VIDEO,
-            numHands: 1
+            numHands: 2 // 修改为检测两只手
         );
 
         handLandmarker = HandLandmarker.CreateFromOptions(options);
         stopwatch = new Stopwatch();
         stopwatch.Start();
+
+        lastProcessTime = Time.realtimeSinceStartup;
 
         // 开始检测循环
         StartCoroutine(DetectHandLandmarks());
@@ -117,7 +133,7 @@ public class HandGestureController : MonoBehaviour
             TextureFormat.RGBA32
         );
 
-        var result = HandLandmarkerResult.Alloc(1);
+        var result = HandLandmarkerResult.Alloc(2);
 
         while (enabled)
         {
@@ -146,81 +162,191 @@ public class HandGestureController : MonoBehaviour
             else
             {
                 isFirstFrame = true;
+                isLeftHandFist = false;
+                isRightHandFist = false;
             }
         }
     }
 
     private void ProcessHandLandmarks(HandLandmarkerResult result)
     {
+        float deltaTime = Time.realtimeSinceStartup - lastProcessTime;
+        lastProcessTime = Time.realtimeSinceStartup;
+
         if (result.handLandmarks == null || result.handLandmarks.Count == 0)
         {
             isFirstFrame = true;
+            isLeftHandFist = false;
+            isRightHandFist = false;
+            doubleFistTimer = 0f;
+            singleFistTimer = 0f;
+            // 当没有检测到手时，重置等待状态
+            waitForHandsRelease = false;
             return;
         }
 
-        var landmarks = result.handLandmarks[0].landmarks;
+        // 重置握拳状态
+        bool previousLeftFist = isLeftHandFist;
+        bool previousRightFist = isRightHandFist;
+        isLeftHandFist = false;
+        isRightHandFist = false;
 
-        // 使用手掌中心点（第9个关键点）作为控制点
-        var palmLandmark = landmarks[9];
-        var indexFingerTip = landmarks[8]; // 食指尖
-        var pinkyTip = landmarks[20]; // 小指尖
-        var middleFingerTip = landmarks[12]; // 中指尖
-        var ringFingerTip = landmarks[16]; // 无名指尖
-        var palmBase = landmarks[0]; // 手腕
-
-        // 计算手掌基准长度（手腕到手掌中心的距离）
-        float palmLength = Vector2.Distance(
-            new Vector2(palmBase.x, palmBase.y),
-            new Vector2(palmLandmark.x, palmLandmark.y)
-        );
-
-        // 检查所有手指是否都靠近手掌中心
-        float distanceThreshold = palmLength * 0.9f;
-
-        // 计算每个手指尖到手掌中心的距离
-        float indexFingerDist = Vector2.Distance(
-            new Vector2(indexFingerTip.x, indexFingerTip.y),
-            new Vector2(palmLandmark.x, palmLandmark.y)
-        );
-        float middleFingerDist = Vector2.Distance(
-            new Vector2(middleFingerTip.x, middleFingerTip.y),
-            new Vector2(palmLandmark.x, palmLandmark.y)
-        );
-        float ringFingerDist = Vector2.Distance(
-            new Vector2(ringFingerTip.x, ringFingerTip.y),
-            new Vector2(palmLandmark.x, palmLandmark.y)
-        );
-        float pinkyDist = Vector2.Distance(
-            new Vector2(pinkyTip.x, pinkyTip.y),
-            new Vector2(palmLandmark.x, palmLandmark.y)
-        );
-
-        // 如果所有手指都靠近手掌中心，判定为握拳
-        if (
-            indexFingerDist < distanceThreshold
-            && middleFingerDist < distanceThreshold
-            && ringFingerDist < distanceThreshold
-            && pinkyDist < distanceThreshold
-        )
+        // 处理每只检测到的手
+        for (int handIndex = 0; handIndex < result.handLandmarks.Count; handIndex++)
         {
-            Debug.Log("检测到握拳手势，停止移动");
-            return;
+            var landmarks = result.handLandmarks[handIndex].landmarks;
+            var handedness = result.handedness[handIndex].categories[0].categoryName;
+
+            // 获取关键点
+            var palmLandmark = landmarks[9];
+            var indexFingerTip = landmarks[8];
+            var pinkyTip = landmarks[20];
+            var middleFingerTip = landmarks[12];
+            var ringFingerTip = landmarks[16];
+            var palmBase = landmarks[0];
+
+            // 计算手掌基准长度
+            float palmLength = Vector2.Distance(
+                new Vector2(palmBase.x, palmBase.y),
+                new Vector2(palmLandmark.x, palmLandmark.y)
+            );
+
+            float distanceThreshold = palmLength * 0.9f;
+
+            // 计算各手指到手掌中心的距离
+            float indexFingerDist = Vector2.Distance(
+                new Vector2(indexFingerTip.x, indexFingerTip.y),
+                new Vector2(palmLandmark.x, palmLandmark.y)
+            );
+            float middleFingerDist = Vector2.Distance(
+                new Vector2(middleFingerTip.x, middleFingerTip.y),
+                new Vector2(palmLandmark.x, palmLandmark.y)
+            );
+            float ringFingerDist = Vector2.Distance(
+                new Vector2(ringFingerTip.x, ringFingerTip.y),
+                new Vector2(palmLandmark.x, palmLandmark.y)
+            );
+            float pinkyDist = Vector2.Distance(
+                new Vector2(pinkyTip.x, pinkyTip.y),
+                new Vector2(palmLandmark.x, palmLandmark.y)
+            );
+
+            // 检测握拳
+            bool isFist =
+                indexFingerDist < distanceThreshold
+                && middleFingerDist < distanceThreshold
+                && ringFingerDist < distanceThreshold
+                && pinkyDist < distanceThreshold;
+
+            // 更新左右手握拳状态
+            if (handedness.ToLower() == "left")
+            {
+                isLeftHandFist = isFist;
+            }
+            else if (handedness.ToLower() == "right")
+            {
+                isRightHandFist = isFist;
+            }
+
+            // 如果这只手没有握拳，且是主控制手（这里假设使用右手），且退出菜单未打开，则处理移动逻辑
+            if (!isFist && handedness.ToLower() == "right" && !exitGameMenu.exitMenuUI.activeSelf)
+            {
+                ProcessHandMovement(landmarks, handIndex == 0);
+            }
         }
 
-        // 计算手掌大小（使用食指尖到小指尖的距离）
+        // 检查是否需要等待手势释放
+        if (waitForHandsRelease)
+        {
+            // 如果双手都松开了，重置等待状态和计时器
+            if (!isLeftHandFist && !isRightHandFist)
+            {
+                waitForHandsRelease = false;
+                canTriggerNextAction = true;
+                doubleFistTimer = 0f;
+                singleFistTimer = 0f;
+            }
+            return; // 等待手势释放期间不处理其他手势
+        }
+
+        // 检查手势状态
+        if (exitGameMenu.exitMenuUI.activeSelf)
+        {
+            // 在退出菜单打开时的手势检测
+            if (isLeftHandFist && isRightHandFist && canTriggerNextAction)
+            {
+                doubleFistTimer += deltaTime;
+                if (doubleFistTimer >= DOUBLE_FIST_THRESHOLD)
+                {
+                    Debug.Log("检测到双手同时握拳，退出游戏");
+                    exitGameMenu.QuitGame();
+                    doubleFistTimer = 0f;
+                    waitForHandsRelease = true;
+                    canTriggerNextAction = false;
+                }
+            }
+            else if ((isLeftHandFist || isRightHandFist) && canTriggerNextAction)
+            {
+                singleFistTimer += deltaTime;
+                if (singleFistTimer >= SINGLE_FIST_THRESHOLD)
+                {
+                    Debug.Log("检测到单手握拳，重置游戏");
+                    exitGameMenu.ResetTargetPosition();
+                    singleFistTimer = 0f;
+                    waitForHandsRelease = true;
+                    canTriggerNextAction = false;
+                }
+            }
+            else
+            {
+                doubleFistTimer = 0f;
+                singleFistTimer = 0f;
+            }
+        }
+        else
+        {
+            // 在游戏正常运行时的手势检测
+            if (isLeftHandFist && isRightHandFist && canTriggerNextAction)
+            {
+                doubleFistTimer += deltaTime;
+                if (doubleFistTimer >= DOUBLE_FIST_THRESHOLD && exitGameMenu != null)
+                {
+                    Debug.Log("检测到双手同时握拳，打开退出菜单");
+                    exitGameMenu.ToggleMenu();
+                    doubleFistTimer = 0f;
+                    waitForHandsRelease = true;
+                    canTriggerNextAction = false;
+                }
+            }
+            else
+            {
+                doubleFistTimer = 0f;
+            }
+        }
+    }
+
+    private void ProcessHandMovement(
+        List<Mediapipe.Tasks.Components.Containers.NormalizedLandmark> landmarks,
+        bool isFirstHand
+    )
+    {
+        var palmLandmark = landmarks[9];
+        var indexFingerTip = landmarks[8];
+        var pinkyTip = landmarks[20];
+
+        // 计算手掌大小
         float currentPalmSize = Vector2.Distance(
             new Vector2(indexFingerTip.x, indexFingerTip.y),
             new Vector2(pinkyTip.x, pinkyTip.y)
         );
 
-        // 将MediaPipe坐标（0-1范围）转换为屏幕坐标
+        // 转换坐标
         Vector3 screenPos = new Vector3(
             palmLandmark.x * Screen.width,
             (1 - palmLandmark.y) * Screen.height,
             10f
         );
 
-        // 将屏幕坐标转换为世界坐标
         Vector3 currentPalmPos = mainCamera.ScreenToWorldPoint(screenPos);
 
         if (isFirstFrame)
@@ -234,17 +360,16 @@ public class HandGestureController : MonoBehaviour
 
         // 计算移动向量
         Vector3 movement = currentPalmPos - previousPalmPos;
-        movement.x = -movement.x; // 反转X轴移动方向
+        movement.x = -movement.x;
 
-        // 计算前后移动（基于手掌大小变化）
+        // 计算前后移动
         float palmSizeDelta = currentPalmSize - previousPalmSize;
         movement.z = palmSizeDelta * depthMoveSpeed;
 
-        // 只有当移动量超过阈值时才更新目标位置
+        // 应用移动
         if (movement.magnitude > movementThreshold)
         {
-            // 计算新的目标位置
-            targetPosition += movement * moveSpeed * Time.deltaTime;
+            targetPosition += movement * moveSpeed * Time.unscaledDeltaTime;
         }
 
         // 平滑插值到目标位置
@@ -252,11 +377,6 @@ public class HandGestureController : MonoBehaviour
             targetObject.transform.position,
             targetPosition,
             smoothSpeed
-        );
-
-        // 添加调试日志
-        Debug.Log(
-            $"手掌位置: {currentPalmPos}, 移动方向: {movement}, 手掌大小变化: {palmSizeDelta}"
         );
 
         // 更新前一帧数据

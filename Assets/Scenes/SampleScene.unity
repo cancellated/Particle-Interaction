@@ -878,13 +878,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13830143, y: -0, z: -0, w: 0.99039024}
-  m_LocalPosition: {x: -0.98, y: 236.99, z: -0.53}
+  m_LocalRotation: {x: 0.06335557, y: -0, z: -0, w: 0.997991}
+  m_LocalPosition: {x: -0.98, y: 236.23, z: -0.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 15.899, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 7.265, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -957,16 +957,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 387736213}
-  m_LocalRotation: {x: 0, y: 0.9961947, z: -0, w: -0.08715578}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 796775682}
-  m_LocalEulerAnglesHint: {x: 0, y: 190, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1684, y: 124}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -191, y: 107.4}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &387736216
@@ -1456,7 +1456,7 @@ Transform:
   m_GameObject: {fileID: 724367387}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.27, y: 234.816, z: 3.295}
+  m_LocalPosition: {x: -1.27, y: 234.816, z: 3.666}
   m_LocalScale: {x: 0.63, y: 0.63, z: 0.63}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1935,7 +1935,7 @@ PrefabInstance:
     - target: {fileID: 8571076842583978917, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -490
       objectReference: {fileID: 0}
     - target: {fileID: 8571076842583978917, guid: 140d1d2c406167c50819d89f86d9092e,
         type: 3}
@@ -2423,7 +2423,7 @@ VisualEffect:
       - m_Value: {x: -0, y: 0, z: 0}
         m_Name: Transform_angles
         m_Overridden: 1
-      - m_Value: {x: 1.7407407, y: -0.2852096, z: 12.694444}
+      - m_Value: {x: 1.7407407, y: -0.2852096, z: 13.38148}
         m_Name: Transform_position
         m_Overridden: 1
       - m_Value: {x: 1.1666665, y: 1.1666665, z: 1.1666665}
@@ -3019,7 +3019,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1183818300}
   m_Layer: 0
-  m_Name: Collider
+  m_Name: "\u7F16\u949FCollider"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4636,9 +4636,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetObject: {fileID: 724367387}
   moveSpeed: 15
-  depthMoveSpeed: 20
+  depthMoveSpeed: 25
   smoothSpeed: 0.1
   movementThreshold: 0.0005
+  exitGameMenu: {fileID: 808287990}
   mainCamera: {fileID: 147836200}
   videoScreen: {fileID: 387736220}
   handLandmarkerModel: {fileID: 4900000, guid: b467f87f6b5d4d200974b3ca14f53987, type: 3}

@@ -18,10 +18,10 @@ public class HandGestureController : MonoBehaviour
     private float depthMoveSpeed = 20.0f; // 前后移动的速度
 
     [SerializeField]
-    private float smoothSpeed = 0.3f; // 平滑系数
+    private float smoothSpeed = 0.1f; // 平滑系数
 
     [SerializeField]
-    private float movementThreshold = 0.001f; // 移动阈值
+    private float movementThreshold = 0.0005f; // 移动阈值
 
     [SerializeField]
     private Camera mainCamera;

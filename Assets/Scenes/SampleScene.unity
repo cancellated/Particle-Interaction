@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: cd777296ddc81f34d8582582f8f40745, type: 3}
+  collisionSound: {fileID: 8300000, guid: 9b7bb2cf5ecf5bb46bbd0983e1628427, type: 3}
 --- !u!65 &150135707
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -691,7 +691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: 7bb0b990b1dae1444a32928fa38df85e, type: 3}
+  collisionSound: {fileID: 8300000, guid: 88d01f9f32ac89240ad104f50c4445ba, type: 3}
 --- !u!65 &288297547
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2543,7 +2543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: fad6dfe20a175984eba54ca3b4448f01, type: 3}
+  collisionSound: {fileID: 8300000, guid: 3511881758ea2204499867f17eee50e9, type: 3}
 --- !u!65 &918974267
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2908,7 +2908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: 2bbbafeafa536854eb5f0bf3e74cd8c4, type: 3}
+  collisionSound: {fileID: 8300000, guid: 9df070f965d0fb5459a7037e3db54be2, type: 3}
 --- !u!65 &1142001718
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3099,7 +3099,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: ed3992c0c22e79c49aed8b1d4fa55f5f, type: 3}
+  collisionSound: {fileID: 8300000, guid: 58efe9dbdcf1468438859a63298b5702, type: 3}
 --- !u!65 &1245204837
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3248,7 +3248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: 5962b7247e775e94eb0086af888edf80, type: 3}
+  collisionSound: {fileID: 8300000, guid: e593ab19c1c16c8409ec768de144d1c3, type: 3}
 --- !u!65 &1286241160
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3397,7 +3397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: 65fd28d0b0596924ca7b02846dacd4f9, type: 3}
+  collisionSound: {fileID: 8300000, guid: 4ae1ccbff083e9b4d94f95ff1878d8a1, type: 3}
 --- !u!65 &1349750707
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3546,7 +3546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: 93e52a97f96b6d64f93089c05fe642fa, type: 3}
+  collisionSound: {fileID: 8300000, guid: 1b302d134b326cd448e83ba0d4c6d9c2, type: 3}
 --- !u!65 &1439270305
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3695,7 +3695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: e015713dca05585468bb9a8c3841dc94, type: 3}
+  collisionSound: {fileID: 8300000, guid: e6e7af2e4880ab448ab04bcb0000f611, type: 3}
 --- !u!65 &1521484607
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3844,7 +3844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: 12a074913f428684dbd120033f8f75cd, type: 3}
+  collisionSound: {fileID: 8300000, guid: a8a48a9d9193e904b960e28ebc76ebd4, type: 3}
 --- !u!65 &1567430749
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4410,7 +4410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b88c79b2b06aee438df05484a9967ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionSound: {fileID: 8300000, guid: 7f3a7033214892249a983e552188c406, type: 3}
+  collisionSound: {fileID: 8300000, guid: b3d289ad1f3ba1d4696f32d242c5965e, type: 3}
 --- !u!65 &1906158355
 BoxCollider:
   m_ObjectHideFlags: 0

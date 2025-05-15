@@ -378,9 +378,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-<<<<<<< Updated upstream
-  m_SourcePrefab: {fileID: 100100000, guid: a79803a268939d04a87e002932e02118, type: 3}
-=======
   m_SourcePrefab: {fileID: 100100000, guid: 6b81b8935f6c9e942b8fa977033acc70, type: 3}
 --- !u!1 &1458387273 stripped
 GameObject:
@@ -388,7 +385,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1427452213}
   m_PrefabAsset: {fileID: 0}
->>>>>>> Stashed changes
 --- !u!1 &1806680259
 GameObject:
   m_ObjectHideFlags: 0

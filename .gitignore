@@ -71,11 +71,11 @@ crashlytics-build.properties
 
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
-<<<<<<< HEAD
 /[Aa]ssets/[Ss]treamingAssets/aa/*
-=======
-/[Aa]ssets/[Ss]treamingAssets/aa/*
->>>>>>> f53b3322badc1c74746cfb6e969f7d91d63e6b9d
 .vscode/settings.json
 .vscode/launch.json
 .vscode/extensions.json
+Assets/Resources/fbx/场景5.fbx
+Assets/Resources/fbx/12.fbx
+Assets/Resources/fbx/25.fbx
+Assets/Resources/fbx/13.fbx

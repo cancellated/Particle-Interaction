@@ -4,25 +4,33 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Text;
 using System;
+using AI.Assistant.Data;
 
 public class APIManager : Singleton<APIManager>
 {
     [Header("API Settings")]
-    public string siliconEndpoint = "https://api.silicon.com/v1/chat/completions";
-    public string siliconApiKey = "your-api-key-here";
-    public string siliconModel = "gpt-4";
+    public string siliconEndpoint = "https://api.siliconflow.cn/v1/chat/completions";
+    public string siliconApiKey = "sk-ylgalqevviwxjblnpuzqxfgmvujzgajxfsolvqzuhckrlxmz";
+    public string siliconModel = "Pro/deepseek-ai/DeepSeek-V3";
+    public bool enableThinking = true;
+    public int thinkingBudget = 4096;
+    public float minP = 0.05f;
     public float temperature = 0.7f;
-    public float topP = 1.0f;
+    public float topP = 0.7f;
+    public int topK = 50;
+    public float frequencyPenalty = 0.5f;
+    public int n = 1;
+    public string[] stop = new string[0];
     public int maxTokens = 1000;
     public bool showDebugLogs = true;
 
     #region 文本对话API
-    // 在类顶部添加日志前缀常量
+    // 日志前缀
     private const string LOG_PREFIX = "[AI API]";
-    
-    // 修改SendTextMessage方法
+
     public void SendTextMessage(string message, Action<string> onResponse, Action<string> onError = null)
     {
+        Debug.Log($"{LOG_PREFIX} 开始处理用户消息: {message}");
         if (string.IsNullOrEmpty(message))
         {
             string errorMsg = $"{LOG_PREFIX} 错误: 消息内容不能为空";
@@ -30,20 +38,12 @@ public class APIManager : Singleton<APIManager>
             onError?.Invoke(errorMsg);
             return;
         }
-    
-        Debug.Log($"{LOG_PREFIX} 开始处理用户消息: {message}");
         StartCoroutine(SendTextMessageCoroutine(message, onResponse, onError));
     }
-    
-    // 修改SendTextMessageCoroutine方法
+
     private IEnumerator SendTextMessageCoroutine(string message, Action<string> onResponse, Action<string> onError)
     {
-        Debug.Log($"{LOG_PREFIX} 准备发送请求，模型: {siliconModel}, 温度: {temperature}, 最大token数: {maxTokens}");
-
-        if (showDebugLogs)
-        {
-            Debug.Log($"[API] 准备发送文本消息: {message}");
-        }
+        Debug.Log($"{LOG_PREFIX} 准备请求参数 - 模型: {siliconModel}, 温度: {temperature}, 最大token数: {maxTokens}");
 
         var requestData = new AIRequest
         {
@@ -51,23 +51,26 @@ public class APIManager : Singleton<APIManager>
             messages = new[] {
                 new AIMessage {
                     role = "user",
-                    content = new ContentPart[] {
-                        new() {
-                            type = "text",
-                            text = message
-                        }
-                    }
+                    content = message
                 }
             },
+            stream = false,
+            max_tokens = maxTokens,
+            enable_thinking = enableThinking,
+            thinking_budget = thinkingBudget,
+            min_p = minP,
             temperature = temperature,
             top_p = topP,
-            max_tokens = maxTokens,
-            stream = false
+            top_k = topK,
+            frequency_penalty = frequencyPenalty,
+            n = n,
+            stop = stop
         };
 
         string jsonData = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+        Debug.Log($"{LOG_PREFIX} 请求JSON数据: {jsonData}");
 
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
         using UnityWebRequest request = new(siliconEndpoint, "POST")
         {
             uploadHandler = new UploadHandlerRaw(bodyRaw),
@@ -77,13 +80,9 @@ public class APIManager : Singleton<APIManager>
         request.SetRequestHeader("Content-Type", "application/json");
         request.SetRequestHeader("Authorization", $"Bearer {siliconApiKey}");
 
-        // 在请求发送前添加日志
         Debug.Log($"{LOG_PREFIX} 正在发送请求到: {siliconEndpoint}");
-        Debug.Log($"{LOG_PREFIX} 请求内容: {jsonData}");
-
         yield return request.SendWebRequest();
 
-        // 添加响应状态日志
         Debug.Log($"{LOG_PREFIX} 请求完成，状态: {request.result}, 响应码: {request.responseCode}");
 
         if (request.result != UnityWebRequest.Result.Success)
@@ -95,87 +94,31 @@ public class APIManager : Singleton<APIManager>
         }
 
         string responseJson = request.downloadHandler.text;
-        if (showDebugLogs)
-        {
-            Debug.Log($"[API] 收到响应: {responseJson}");
-        }
+        Debug.Log($"{LOG_PREFIX} 收到原始响应: {responseJson}");
 
         try
         {
             var response = JsonUtility.FromJson<AIResponse>(responseJson);
             if (response.choices != null && response.choices.Length > 0)
             {
-                string contentText = "";
-                if (response.choices[0].message.content != null)
-                {
-                    foreach (var part in response.choices[0].message.content)
-                    {
-                        if (part.type == "text" && !string.IsNullOrEmpty(part.text))
-                        {
-                            contentText += part.text;
-                        }
-                    }
-                }
+                string contentText = response.choices[0].message.content;
+                Debug.Log($"{LOG_PREFIX} 解析成功，AI回复内容: {contentText}");
                 onResponse?.Invoke(contentText);
             }
             else
             {
-                onError?.Invoke("API返回了空响应");
+                string errorMsg = $"{LOG_PREFIX} API返回了空响应";
+                Debug.LogError(errorMsg);
+                onError?.Invoke(errorMsg);
             }
         }
         catch (Exception ex)
         {
-            string errorMsg = $"[API] 解析响应失败: {ex.Message}";
+            string errorMsg = $"{LOG_PREFIX} 解析响应失败: {ex.Message}";
             Debug.LogError(errorMsg);
             onError?.Invoke(errorMsg);
         }
     }
-    #endregion
-
-    #region 数据模型
-    [Serializable]
-    private class AIRequest
-    {
-        public string model;
-        public AIMessage[] messages;
-        public float temperature;
-        public float top_p;
-        public int max_tokens;
-        public bool stream;
-    }
-
-    [Serializable]
-    private class AIMessage
-    {
-        public string role;
-        public ContentPart[] content;
-    }
-
-    [Serializable]
-    private class ContentPart
-    {
-        public string type;
-        public string text;
-        public ImageUrl image_url;
-    }
-
-    [Serializable]
-    private class ImageUrl
-    {
-        public string url;
-        public string detail;
-    }
-
-    [Serializable]
-    private class AIResponse
-    {
-        public Choice[] choices;
-    }
-
-    [Serializable]
-    private class Choice
-    {
-        public AIMessage message;
-    }
-    #endregion
 }
+    #endregion
+

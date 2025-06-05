@@ -8,6 +8,7 @@ using AI.Assistant.Data;
 
 public class APIManager : Singleton<APIManager>
 {
+    #region 配置参数
     [Header("API Settings")]
     public string siliconEndpoint = "https://api.siliconflow.cn/v1/chat/completions";
     public string siliconApiKey = "sk-ylgalqevviwxjblnpuzqxfgmvujzgajxfsolvqzuhckrlxmz";
@@ -23,6 +24,7 @@ public class APIManager : Singleton<APIManager>
     public string[] stop = new string[0];
     public int maxTokens = 1000;
     public bool showDebugLogs = true;
+    #endregion
 
     #region 文本对话API
     // 日志前缀

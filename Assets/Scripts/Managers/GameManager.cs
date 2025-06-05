@@ -1,4 +1,5 @@
-// GameManager.cs
+// Assets\Scripts\Managers\GameManager.cs
+using System;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
@@ -9,9 +10,23 @@ public class GameManager : Singleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
+        // 订阅游戏重置事件
+        GameEvents.OnGameReset += HandleGameReset;
+    }
+
+    private void OnDestroy()
+    {
+        // 取消订阅
+        GameEvents.OnGameReset -= HandleGameReset;
     }
 
     public void ResetGame()
+    {
+        // 触发游戏重置事件
+        GameEvents.TriggerGameReset();
+    }
+
+    private void HandleGameReset()
     {
         // 销毁当前玩家
         GameObject currentPlayer = GameObject.FindWithTag("Player");

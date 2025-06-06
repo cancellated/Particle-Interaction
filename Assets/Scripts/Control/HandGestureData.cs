@@ -4,7 +4,7 @@ using Mediapipe.Tasks.Vision.HandLandmarker;
 namespace GestureControl.Data
 {
     /// <summary>
-    /// 手势数据容器类
+    /// 手势数据类
     /// </summary>
     public class HandGestureData
     {
@@ -28,6 +28,18 @@ namespace GestureControl.Data
         
         // 手势识别时间戳
         public float DetectionTime { get; set; }
+
+        // 目标位置(平滑移动用)
+        public Vector3 TargetPosition { get; set; }  
+
+        // 上一帧手掌位置  
+        public Vector3 PreviousPalmPosition { get; set; }
+
+        // 上一帧手掌大小
+        public float PreviousPalmSize { get; set; }  
+        
+        // 是否是第一帧标志    
+        public bool IsFirstFrame { get; set; }           
     }
 }
 

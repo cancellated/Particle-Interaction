@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
 using Debug = UnityEngine.Debug;
 using GestureControl.Detector;
+using GestureControl.Data;
 
 namespace GestureControl.Controller
 {
@@ -28,10 +31,8 @@ namespace GestureControl.Controller
         [SerializeField] private Camera mainCamera;         // 主摄像机
         [SerializeField] private HandGestureDetector handGestureDetector; // 手势检测器
 
-        private Vector3 targetPosition;       // 目标位置(平滑移动用)
-        private Vector3 previousPalmPos;     // 上一帧手掌位置
-        private float previousPalmSize;      // 上一帧手掌大小
-        private bool isFirstFrame = true;    // 是否是第一帧标志
+        private GestureType currentGesture;
+        private InputActionAsset gestureActions;
 
         private void Start()
         {
@@ -62,24 +63,48 @@ namespace GestureControl.Controller
             }
 
             // 注册手势检测回调
-            handGestureDetector.OnHandGestureDetected += ProcessHandLandmarks;
+            // 初始化输入系统
+            gestureActions = Resources.Load<InputActionAsset>("GestureControls");
+            gestureActions.Enable();
+            
+            // 绑定手势事件
+            GameEvents.OnHandGestureDetected += OnGestureDetected;
         }
 
-        /// <summary>
-        /// 处理手势识别结果
-        /// </summary>
-        /// <param name="result">手势识别结果</param>
-        private void ProcessHandLandmarks(HandLandmarkerResult result)
+        private void OnGestureDetected(HandGestureData data)
         {
-            // 使用Config中的配置参数控制目标对象
-            // 例如: Config.MoveSpeed, Config.DepthMoveSpeed等
+            var newGesture = AnalyzeGesture(data);
+            if(newGesture != currentGesture)
+            {
+                // 使用InputAction触发对应的手势事件
+                var action = gestureActions.FindAction(newGesture.ToString());
+                if(action != null)
+                {
+                    action.Enable();
+                    action.performed += ctx => { /* 手势触发后的处理 */ };
+                }
+                
+                currentGesture = newGesture;
+            }
         }
 
+        private GestureType AnalyzeGesture(HandGestureData data)
+        {
+            // 复杂手势分析逻辑
+            if(data.IsLeftHandFist && data.IsRightHandFist) 
+                return GestureType.DoubleFist;
+            // ... 其他手势判断
+            return GestureType.None;
+        }
+        
         private void OnDestroy()
         {
             // 注销回调防止内存泄漏
             if (handGestureDetector != null)
-                handGestureDetector.OnHandGestureDetected -= ProcessHandLandmarks;
+            {
+
+            }
+
         }
     }
 }

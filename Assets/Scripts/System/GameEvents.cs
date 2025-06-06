@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using GestureControl.Data;
 
 /// <summary>
 /// 全局事件系统，用于模块间通信
@@ -41,6 +42,30 @@ public static class GameEvents
     {
         Debug.Log("[GameEvents] 触发AI对话流程完成");
         OnAIDialogueComplete?.Invoke();
+    }
+    #endregion
+
+    #region 手部手势事件
+    public static event Action<HandGestureData> OnHandGestureDetected;
+    public static event Action<HandGestureData> OnHandGestureStarted;
+    public static event Action<HandGestureData> OnHandGestureEnded;
+
+    // 触发手势检测事件
+    public static void TriggerHandGestureDetected(HandGestureData data)
+    {
+        OnHandGestureDetected?.Invoke(data);
+    }
+
+    // 触发手势开始事件
+    public static void TriggerHandGestureStarted(HandGestureData data)
+    {
+        OnHandGestureStarted?.Invoke(data);
+    }
+
+    // 触发手势结束事件
+    public static void TriggerHandGestureEnded(HandGestureData data)
+    {
+        OnHandGestureEnded?.Invoke(data);
     }
     #endregion
 }

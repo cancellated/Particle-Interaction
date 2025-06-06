@@ -24,20 +24,13 @@ namespace GestureControl.Detector
         private WebCamTexture webCamTexture;    // 摄像头纹理
         private Stopwatch stopwatch;            // 用于视频帧时间戳
 
+        private bool isLeftHandFist = false;
+        private bool isRightHandFist = false;
+        private bool waitForHandsRelease = false;
+
         // 手势检测完成事件
         // 修改事件委托类型
         public System.Action<HandGestureData> OnHandGestureDetected;
-
-        // 手势状态变量
-        private bool isLeftHandFist = false;     // 左手是否握拳
-        private bool isRightHandFist = false;   // 右手是否握拳
-        private float doubleFistTimer = 0f;     // 双手握拳计时器
-        private float singleFistTimer = 0f;     // 单手握拳计时器
-        private const float DOUBLE_FIST_THRESHOLD = 0.5f; // 双手握拳触发阈值(秒)
-        private const float SINGLE_FIST_THRESHOLD = 0.5f; // 单手握拳触发阈值(秒)
-        private bool waitForHandsRelease = false; // 等待手势释放标志
-        private bool canTriggerNextAction = true; // 是否可以触发下一个动作
-
         private void Start()
         {
             // 参数校验
@@ -134,7 +127,9 @@ namespace GestureControl.Detector
             var gestureData = new HandGestureData
             {
                 RawResult = result,
-                DetectionTime = Time.time
+                DetectionTime = Time.time,
+                IsLeftHandFist = isLeftHandFist,
+                IsRightHandFist = isRightHandFist
             };
 
             // 无检测结果时重置状态
@@ -149,6 +144,7 @@ namespace GestureControl.Detector
                 return;
             }
 
+            // 处理检测结果并填充手势数据
             // 重置握拳状态
             isLeftHandFist = false;
             isRightHandFist = false;
@@ -196,7 +192,7 @@ namespace GestureControl.Detector
                 }
             }
 
-            // 触发事件
+            // 触发手势检测事件
             OnHandGestureDetected?.Invoke(gestureData);
         }
 
@@ -204,7 +200,7 @@ namespace GestureControl.Detector
         {
             // 释放资源
             if (webCamTexture != null) webCamTexture.Stop();
-            if (handLandmarker != null) handLandmarker.Close();
+            handLandmarker?.Close();
         }
     }
 }

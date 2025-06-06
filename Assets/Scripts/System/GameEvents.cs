@@ -17,14 +17,30 @@ public static class GameEvents
     }
     #endregion
 
-    #region 对话API事件
-    public static event Action<string> OnAIDialogueStart;
-    public static event Action<string> OnAIDialogueComplete;
-    
-    public static void TriggerAIDialogueComplete(string response)
+    #region 对话流程事件
+    public static event Action OnAIDialogueStart;
+    public static event Action<string> OnAIDialogueResponse;
+    public static event Action OnAIDialogueComplete;
+
+
+    // 触发AI对话开始事件
+    public static void TriggerAIDialogueStart()
     {
-        Debug.Log("[GameEvents] 触发AI对话完成事件");
-        OnAIDialogueComplete?.Invoke(response);
+        Debug.Log("[GameEvents] 触发AI对话流程开始");
+        OnAIDialogueStart?.Invoke();
+    }
+
+    // 触发AI对话响应事件
+        public static void TriggerAIDialogueResponse(string message)
+    {
+        OnAIDialogueResponse?.Invoke(message);
+    }
+    
+    // 触发AI对话完成事件
+    public static void TriggerAIDialogueComplete()
+    {
+        Debug.Log("[GameEvents] 触发AI对话流程完成");
+        OnAIDialogueComplete?.Invoke();
     }
     #endregion
 }

@@ -15,6 +15,5 @@ namespace GestureControl.Data
         DoublePinch,    // 双手同时捏合手势
         LeftSwipe,      // 左手滑动手势（水平方向）
         RightSwipe,    // 右手滑动手势
-        // 可继续添加其他手势类型
     }
 }

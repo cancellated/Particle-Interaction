@@ -1,29 +1,28 @@
 using System.Collections.Generic;
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class HandGestureController : MonoBehaviour
 {
     [Header("MediaPipe设置")]
-    public HandLandmarkerRunner handLandmarkerRunner; // 场景中的HandLandmarker组件
+    public HandLandmarkerRunner handLandmarkerRunner;
 
-    [Header("控制设置")]
-    public GameObject targetObject; // 要控制的3D物体
-    public float moveSpeed = 5f; // 移动速度
-    public float gestureThreshold = 0.1f; // 手势判定阈值
+    [Header("手势设置")]
+    public float moveSensitivity = 10f; // 鼠标移动灵敏度
+    public float clickThreshold = 0.05f; // 点击判定阈值
 
     private Vector3 previousPalmPosition;
     private bool isFirstFrame = true;
+    private bool isPinching = false;
 
     private void OnEnable()
     {
-        // 订阅手势识别结果事件
         handLandmarkerRunner.OnHandLandmarkerOutput.AddListener(OnHandLandmarkDetected);
     }
 
     private void OnDisable()
     {
-        // 取消订阅
         handLandmarkerRunner.OnHandLandmarkerOutput.RemoveListener(OnHandLandmarkDetected);
     }
 
@@ -36,8 +35,6 @@ public class HandGestureController : MonoBehaviour
         }
 
         var landmarks = result.handLandmarks[0].landmarks;
-
-        // 计算手掌中心点(使用第9号关键点作为手掌中心)
         var palmCenter = landmarks[9];
         Vector3 currentPalmPosition = new Vector3(palmCenter.x, palmCenter.y, palmCenter.z);
 
@@ -48,29 +45,27 @@ public class HandGestureController : MonoBehaviour
             return;
         }
 
-        // 计算手掌移动方向和距离
+        // 计算手势移动量并转换为鼠标移动
         Vector3 palmMovement = currentPalmPosition - previousPalmPosition;
+        Mouse.current.WarpCursorPosition(Mouse.current.position.ReadValue() + 
+            new Vector2(palmMovement.x * moveSensitivity, -palmMovement.y * moveSensitivity));
 
-        // 判断手势方向并移动物体
-        if (Mathf.Abs(palmMovement.x) > gestureThreshold)
+        // 检测捏合手势(拇指和食指距离)
+        var thumbTip = landmarks[4];
+        var indexTip = landmarks[8];
+        float pinchDistance = Vector3.Distance(
+            new Vector3(thumbTip.x, thumbTip.y, thumbTip.z),
+            new Vector3(indexTip.x, indexTip.y, indexTip.z));
+
+        // 触发鼠标点击
+        if (pinchDistance < clickThreshold && !isPinching)
         {
-            // 左右移动
-            float moveX = palmMovement.x * moveSpeed * Time.deltaTime;
-            targetObject.transform.Translate(moveX, 0, 0);
+            isPinching = true;
+            Mouse.current.leftButton.Click();
         }
-
-        if (Mathf.Abs(palmMovement.y) > gestureThreshold)
+        else if (pinchDistance >= clickThreshold)
         {
-            // 上下移动
-            float moveY = palmMovement.y * moveSpeed * Time.deltaTime;
-            targetObject.transform.Translate(0, moveY, 0);
-        }
-
-        if (Mathf.Abs(palmMovement.z) > gestureThreshold)
-        {
-            // 前后移动
-            float moveZ = -palmMovement.z * moveSpeed * Time.deltaTime; // 注意Z轴方向取反
-            targetObject.transform.Translate(0, 0, moveZ);
+            isPinching = false;
         }
 
         previousPalmPosition = currentPalmPosition;

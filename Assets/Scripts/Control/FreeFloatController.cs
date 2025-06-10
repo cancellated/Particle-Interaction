@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class FreeFloatController : MonoBehaviour
 {
+    /*
     [Header("移动参数")]
     public float moveForce = 30f; // 移动推力
     public float maxSpeed = 15f; // 最大速度限制
@@ -42,4 +43,5 @@ public class FreeFloatController : MonoBehaviour
         // 可选：手动限制速度（更严格）
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
     }
+    */
 }

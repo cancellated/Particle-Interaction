@@ -6,9 +6,18 @@
             "id": "b0b6d4fa-d0c1-4b2d-a14e-3e1a1cececad",
             "actions": [
                 {
+                    "name": "Look",
+                    "type": "Value",
+                    "id": "30947796-ccc6-46b6-a28d-98202ee21bff",
+                    "expectedControlType": "Vector2",
+                    "processors": "ScaleVector2(x=0.1,y=0.1)",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Move",
                     "type": "Value",
-                    "id": "6b394e01-bdeb-4007-8703-adcb654bdefc",
+                    "id": "4d268195-4fa6-4fbc-a323-88d7d39e2099",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -18,14 +27,69 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "0398c5b9-3912-4da5-8407-a5364d48e2be",
-                    "path": "<Mouse>/position",
+                    "id": "3706e7d6-cd7c-46ea-9b97-5246ffdaa234",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "8b0ae7b4-6324-4c5d-b622-7effcd6440cb",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "0ea79bf8-31af-4e51-9fd2-484cea162d46",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Move",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "8736b330-c003-44cd-869c-cfb6f0edfca4",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "52a14365-8bfd-4571-9dae-1e376dafa2a4",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "e74d6b4e-7ac8-4f55-bbac-ef5e85e654ba",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
@@ -34,13 +98,22 @@
             "id": "cd1cfe82-bb75-4d5d-ae32-e4b7d6655c41",
             "actions": [
                 {
-                    "name": "Move",
+                    "name": "Move Cursor",
                     "type": "Value",
                     "id": "530b4489-141d-4eee-b546-e4e6ddb70264",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Confirm",
+                    "type": "Button",
+                    "id": "7edf7584-43c0-4c8b-8a90-f4d1a0025179",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -51,7 +124,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "Move Cursor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b7223882-9add-4569-8d5b-cd6afb3ff62a",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

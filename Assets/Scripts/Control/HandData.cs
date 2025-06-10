@@ -6,7 +6,7 @@ namespace GestureControl.Data
     /// <summary>
     /// 手势数据类
     /// </summary>
-    public class HandGestureData
+    public class HandData
     {
         public HandLandmarkerResult RawResult { get; set; } // 原始检测结果
         

@@ -12,7 +12,7 @@ namespace GestureControl.Detector
     /// <summary>
     /// 手势检测器 - 负责从摄像头捕获图像并识别手势
     /// </summary>
-    public class HandGestureDetector : MonoBehaviour
+    public class HandDetector : MonoBehaviour
     {
         [SerializeField] private TextAsset handLandmarkerModel; // 手部关键点检测模型
         [SerializeField] private RawImage videoScreen;          // 显示摄像头画面的UI组件
@@ -30,7 +30,7 @@ namespace GestureControl.Detector
 
         // 手势检测完成事件
         // 修改事件委托类型
-        public System.Action<HandGestureData> OnHandGestureDetected;
+        public System.Action<HandData> OnHandGestureDetected;
         private void Start()
         {
             // 参数校验
@@ -124,7 +124,7 @@ namespace GestureControl.Detector
         private void ProcessHandLandmarks(HandLandmarkerResult result)
         {
             // 创建手势数据实例
-            var gestureData = new HandGestureData
+            var gestureData = new HandData
             {
                 RawResult = result,
                 DetectionTime = Time.time,

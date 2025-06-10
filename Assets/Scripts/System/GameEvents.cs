@@ -46,24 +46,24 @@ public static class GameEvents
     #endregion
 
     #region 手部手势事件
-    public static event Action<HandGestureData> OnHandGestureDetected;
-    public static event Action<HandGestureData> OnHandGestureStarted;
-    public static event Action<HandGestureData> OnHandGestureEnded;
+    public static event Action<HandData> OnHandGestureDetected;
+    public static event Action<HandData> OnHandGestureStarted;
+    public static event Action<HandData> OnHandGestureEnded;
 
     // 触发手势检测事件
-    public static void TriggerHandGestureDetected(HandGestureData data)
+    public static void TriggerHandGestureDetected(HandData data)
     {
         OnHandGestureDetected?.Invoke(data);
     }
 
     // 触发手势开始事件
-    public static void TriggerHandGestureStarted(HandGestureData data)
+    public static void TriggerHandGestureStarted(HandData data)
     {
         OnHandGestureStarted?.Invoke(data);
     }
 
     // 触发手势结束事件
-    public static void TriggerHandGestureEnded(HandGestureData data)
+    public static void TriggerHandGestureEnded(HandData data)
     {
         OnHandGestureEnded?.Invoke(data);
     }

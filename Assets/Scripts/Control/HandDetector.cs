@@ -29,7 +29,6 @@ namespace GestureControl.Detector
         private bool waitForHandsRelease = false;
 
         // 手势检测完成事件
-        // 修改事件委托类型
         public System.Action<HandData> OnHandGestureDetected;
         private void Start()
         {

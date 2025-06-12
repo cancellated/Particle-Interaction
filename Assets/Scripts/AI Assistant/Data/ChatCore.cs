@@ -1,4 +1,4 @@
-namespace AI.Assistant.Data
+﻿namespace AI.Assistant.Data
 {
     using System;
     using UnityEngine;
@@ -39,5 +39,8 @@ namespace AI.Assistant.Data
     {
         public AIMessage message;
     }
+
+
+
 }
 

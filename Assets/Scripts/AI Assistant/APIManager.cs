@@ -9,7 +9,7 @@ using AI.Assistant.Data;
 
 namespace AI.Assistant.API
 { 
-  /// <summary>
+    /// <summary>
     /// APIManager 负责与AI后端接口通信，发送用户消息并获取AI回复，支持上下文记忆
     /// </summary>
     public class APIManager : Singleton<APIManager>
@@ -18,7 +18,7 @@ namespace AI.Assistant.API
         [Header("API Settings")]
         public string siliconEndpoint = "https://api.siliconflow.cn/v1/chat/completions"; // API接口地址
         public string siliconApiKey = "sk-ylgalqevviwxjblnpuzqxfgmvujzgajxfsolvqzuhckrlxmz"; // API密钥
-        public string siliconModel = "Pro/deepseek-ai/DeepSeek-V3"; // 使用的AI模型
+        public string siliconModel = "deepseek-ai/DeepSeek-V3"; // 使用的AI模型
         public bool enableThinking = true; // 是否启用思考模式
         public int thinkingBudget = 4096; // 思考预算
         public float minP = 0.05f; // 最小概率
@@ -28,16 +28,31 @@ namespace AI.Assistant.API
         public float frequencyPenalty = 0.5f; // 频率惩罚
         public int n = 1; // 返回结果数量
         public string[] stop = new string[0]; // 停止词
-        public int maxTokens = 1000; // 最大token数
+        public int maxTokens = 512; // 最大token数
         public bool showDebugLogs = true; // 是否显示调试日志
-        #endregion
 
         // 聊天历史，便于上下文记忆
-        private AIChatHistory chatHistory = new AIChatHistory();
-
+        private readonly AIChatHistory chatHistory = new();
         // 日志前缀
         private const string LOG_PREFIX = "[AI API]";
+        #endregion
 
+        #region 生命周期管理
+        void OnEnable()
+        {
+            GameEvents.OnAIDialogueStart += HandleAIDialogueStart;
+            GameEvents.OnAIDialogueSend += HandleAIDialogueSend;
+            GameEvents.OnAIDialogueComplete += HandleAIDialogueComplete;
+        }
+        void OnDisable()
+        {
+            GameEvents.OnAIDialogueStart -= HandleAIDialogueStart;
+            GameEvents.OnAIDialogueSend -= HandleAIDialogueSend;
+            GameEvents.OnAIDialogueComplete -= HandleAIDialogueComplete;
+        }
+        #endregion
+
+        #region 消息收发与解析
         /// <summary>
         /// 发送文本消息到AI接口，获取AI回复（带上下文）
         /// </summary>
@@ -74,18 +89,21 @@ namespace AI.Assistant.API
                 new AIMessage
                 {
                     role = "system",
-                    content = "你每次回复大约在100字，语气轻快活泼，需要在对话末尾为用户提供三个选项，" +
-                    "用户会选择其中一个来推动对话（选项约10到15字，不计入正文字数）"
+                    content = "请严格以如下JSON格式回复：" +
+                    "{\"text\": \"正文内容\", \"option1\": \"选项1\", \"option2\": \"选项2\", \"option3\": \"选项3\"}。" +
+                    "正文约100字，语气轻快活泼，选项每个10-15字。不要输出多余内容。"
                 },
-                new AIMessage
-                {
+                new AIMessage {
                     role = "system",
-                    content = ""
+                    content = "你收到的消息中，role为user的消息为当前消息，role为assistant的为历史消息，请结合历史消息和当前消息回复。"
+
                 }
+
+            
             };
 
-            // 添加历史消息（如最近5条）
-            messages.AddRange(chatHistory.GetRecent(10));
+            // 添加历史消息
+            messages.AddRange(chatHistory.GetRecent(5));
 
             // 当前用户消息
             messages.Add(new AIMessage
@@ -98,7 +116,7 @@ namespace AI.Assistant.API
             var requestData = new AIRequest
             {
                 model = siliconModel,
-                messages = messages.ToArray(),
+                messages = chatHistory.GetRecent(10),
                 stream = false,
                 max_tokens = maxTokens,
                 enable_thinking = enableThinking,
@@ -170,5 +188,23 @@ namespace AI.Assistant.API
                 onError?.Invoke(errorMsg);
             }
         }
+        #endregion
+
+        #region 事件处理
+        public void HandleAIDialogueStart()
+        { 
+        }
+        private void HandleAIDialogueSend(string userText)
+        {
+            SendTextMessage(userText,
+                response => GameEvents.TriggerAIDialogueResponse(response),
+                error => Debug.LogError(error));
+        }
+        public void HandleAIDialogueComplete()
+        {
+            chatHistory.Clear();
+        }
+        #endregion
+
     }
 }

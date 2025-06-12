@@ -21,15 +21,8 @@ namespace AI.Assistant
                 hasTriggered = true;
                 // 通知UI显示对话面板
                 GameEvents.TriggerAIDialogueStart();
-                // 发送预设指令到AI
-                APIManager.Instance.SendTextMessage(presetInstruction, OnAIResponse);
+                GameEvents.TriggerAIDialogueSend(presetInstruction);
             }
-        }
-
-        private void OnAIResponse(string aiReply)
-        {
-            // 通知UI显示AI回复
-            GameEvents.TriggerAIDialogueResponse(aiReply);
         }
     }
 }

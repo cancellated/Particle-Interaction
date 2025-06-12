@@ -21,6 +21,7 @@ public static class GameEvents
     #region 对话流程事件
     public static event Action OnAIDialogueStart;
     public static event Action<string> OnAIDialogueResponse;
+    public static event Action<string> OnAIDialogueSend;
     public static event Action OnAIDialogueComplete;
 
 
@@ -31,10 +32,16 @@ public static class GameEvents
         OnAIDialogueStart?.Invoke();
     }
 
-    // 触发AI对话响应事件
-        public static void TriggerAIDialogueResponse(string message)
+    //触发AI对话发送事件
+    public static void TriggerAIDialogueSend(string userMessage)
     {
-        OnAIDialogueResponse?.Invoke(message);
+        OnAIDialogueSend?.Invoke(userMessage);
+    }
+
+    // 触发AI对话响应事件
+    public static void TriggerAIDialogueResponse(string AIMessage)
+    {
+        OnAIDialogueResponse?.Invoke(AIMessage);
     }
     
     // 触发AI对话完成事件

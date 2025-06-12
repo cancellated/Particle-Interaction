@@ -1,86 +1,153 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using AI.Assistant.Data;
-using AI.Assistant.API;
+using AI.Assistant.Data; 
 
+
+/// <summary>
+/// AIChat 负责管理AI对话UI的显示、选项按钮交互以及与事件系统的通信
+/// </summary>
 public class AIChat : MonoBehaviour
 {
-    [Header("UI References")]
-    public Text dialogueContent;
-    public GameObject dialoguePanel;
-    [Header("Display Settings")]
-    public float typingSpeed = 0.05f;
-    public float fastDisplaySpeed = 0.01f;
-    
-    private Coroutine typingCoroutine;
-    private bool isTyping = false;
+    #region 参数配置
+    [Header("UI组件")]
+    public CanvasGroup ChatGroup; //对话系统UI界面
+    public Text dialogueText; // 显示AI回复文本
+    public Button option1Button; // 选项1按钮
+    public Button option2Button; // 选项2按钮
+    public Button option3Button; // 选项3按钮
+    public Button endButton;     // 结束对话按钮
 
-    private void OnEnable()
+    public float typingSpeed = 0.05f; // 打字机效果速度
+
+    private Coroutine typingCoroutine; // 当前打字协程
+    private bool isTyping = false;     // 是否正在打字
+    private AIJsonReply currentReply;  // 当前AI回复数据
+    #endregion
+
+    #region 生命周期管理
+    void Start()
     {
-        // 订阅对话事件
-        GameEvents.OnAIDialogueStart += OnDialogueStart;
-        GameEvents.OnAIDialogueResponse += OnDialogueResponse; 
-        GameEvents.OnAIDialogueComplete += OnDialogueComplete;
+        // 绑定按钮点击事件
+        option1Button.onClick.AddListener(() => OnOptionSelected(option1Button.GetComponentInChildren<Text>().text));
+        option2Button.onClick.AddListener(() => OnOptionSelected(option2Button.GetComponentInChildren<Text>().text));
+        option3Button.onClick.AddListener(() => OnOptionSelected(option3Button.GetComponentInChildren<Text>().text));
+        endButton.onClick.AddListener(OnEndDialogue);
+        ChatGroup.gameObject.SetActive(false);  //初始隐藏
     }
 
-    private void OnDisable()
+    void OnEnable()
     {
-        // 取消订阅
-        GameEvents.OnAIDialogueStart -= OnDialogueStart;
-        GameEvents.OnAIDialogueResponse -= OnDialogueResponse;
-        GameEvents.OnAIDialogueComplete -= OnDialogueComplete;
+        // 订阅AI回复事件
+        GameEvents.OnAIDialogueResponse += HandleDialogueResponse;
     }
 
-    private void OnDialogueStart()
+    void OnDisable()
     {
-        // 显示对话UI
-        dialoguePanel.SetActive(true);
-        dialogueContent.text = "思考中...";
+        // 取消订阅AI回复事件
+        GameEvents.OnAIDialogueResponse -= HandleDialogueResponse;
     }
+    #endregion
 
-    private void OnDialogueResponse(string message)
+    #region 解析AI回复并打出文字
+    /// <summary>
+    /// 处理AI回复事件，解析JSON并启动打字机效果
+    /// </summary>
+    /// <param name="message">AI返回的消息内容</param>
+    private void HandleDialogueResponse(string message)
     {
-        // 停止正在进行的打字效果
-        if(isTyping)
+        AIJsonReply reply = null;
+        try
+        {
+            reply = JsonUtility.FromJson<AIJsonReply>(message);
+        }
+        catch
+        {
+            Debug.LogWarning("AI回复不是有效的JSON格式，直接显示原文。");
+        }
+
+        currentReply = reply;
+
+        // 如果正在打字，先停止
+        if (isTyping && typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
             isTyping = false;
         }
-        
-        // 开始新的打字效果
-        typingCoroutine = StartCoroutine(TypeText(message, typingSpeed));
+
+        // 启动打字机效果
+        if (reply != null && !string.IsNullOrEmpty(reply.text))
+        {
+            typingCoroutine = StartCoroutine(TypeText(reply.text, typingSpeed, reply));
+        }
+        else
+        {
+            typingCoroutine = StartCoroutine(TypeText(message, typingSpeed, null));
+        }
     }
 
-    //对话文本打字机效果
-    private IEnumerator TypeText(string text, float speed)
+    /// <summary>
+    /// 打字机效果显示文本，结束后显示选项
+    /// </summary>
+    private IEnumerator TypeText(string text, float speed, AIJsonReply reply)
     {
         isTyping = true;
-        dialogueContent.text = "";
-        
-        foreach (char letter in text.ToCharArray())
+        dialogueText.text = "";
+        SetOptionsActive(false);
+
+        foreach (char c in text)
         {
-            dialogueContent.text += letter;
+            dialogueText.text += c;
             yield return new WaitForSeconds(speed);
         }
-        
+
         isTyping = false;
-    }
 
-    // 快速显示完整内容（可由外部调用）
-    public void ShowTextImmediately(string text)
-    {
-        if(isTyping)
+        // 打字结束后显示选项
+        if (reply != null)
         {
-            StopCoroutine(typingCoroutine);
-            isTyping = false;
+            option1Button.GetComponentInChildren<Text>().text = reply.option1;
+            option2Button.GetComponentInChildren<Text>().text = reply.option2;
+            option3Button.GetComponentInChildren<Text>().text = reply.option3;
+            SetOptionsActive(true);
         }
-        dialogueContent.text = text;
+        else
+        {
+            SetOptionsActive(false);
+        }
     }
 
-    private void OnDialogueComplete()
+    /// <summary>
+    /// 控制选项按钮和结束按钮的显示/隐藏
+    /// </summary>
+    private void SetOptionsActive(bool active)
     {
-        // 隐藏对话UI
-        dialoguePanel.SetActive(false);
+        option1Button.gameObject.SetActive(active);
+        option2Button.gameObject.SetActive(active);
+        option3Button.gameObject.SetActive(active);
+        endButton.gameObject.SetActive(active);
     }
+    #endregion
+
+    #region 事件处理
+    /// <summary>
+    /// 选项按钮点击事件，发送选项内容到AI
+    /// </summary>
+    private void OnOptionSelected(string optionText)
+    {
+        SetOptionsActive(false);
+        // 通过事件系统发送用户选项
+        GameEvents.TriggerAIDialogueSend(optionText);
+    }
+
+    /// <summary>
+    /// 结束按钮点击事件，通知对话结束
+    /// </summary>
+    private void OnEndDialogue()
+    {
+        ChatGroup.gameObject.SetActive(false);
+        // 通过事件系统通知结束
+        GameEvents.TriggerAIDialogueComplete();
+    }
+    #endregion
 }

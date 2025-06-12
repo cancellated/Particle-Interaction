@@ -42,6 +42,16 @@
     }
 
     [Serializable]
+    public class AIJsonReply
+    {
+        public string text;
+        public string option1;
+        public string option2;
+        public string option3;
+    }
+
+    #region AI历史记忆功能实现
+    [Serializable]
     public class AIChatHistory
     {
         public List<AIMessage> messages = new List<AIMessage>();
@@ -63,23 +73,6 @@
                 return messages.ToArray();
             return messages.GetRange(messages.Count - maxCount, maxCount).ToArray();
         }
-
-       //此方法已不需要
-/*        /// <summary>
-        /// 获取最近N条消息，并拼接为字符串（如：User: ...\nAssistant: ...）
-        /// </summary>
-        public string GetRecentAsString(int maxCount)
-        {
-            var recent = GetRecent(maxCount);
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            foreach (var msg in recent)
-            {
-                sb.AppendLine($"{msg.role}: {msg.content}");
-            }
-            return sb.ToString();
-        }*/
-
-
         /// <summary>
         /// 清空历史
         /// </summary>
@@ -89,7 +82,7 @@
             Debug.Log("本轮对话记录已清空");
         }
     }
-
+    #endregion
 
 
 }

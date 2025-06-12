@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using AI.Assistant.Data;
+using AI.Assistant.API;
 
 public class AIChat : MonoBehaviour
 {

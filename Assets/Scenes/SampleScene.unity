@@ -1598,9 +1598,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c6cee84973d93745aac317485a2502f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveForce: 20
-  maxSpeed: 2
-  drag: 6
 --- !u!114 &724367393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4635,17 +4632,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObject: {fileID: 724367387}
-  moveSpeed: 15
-  depthMoveSpeed: 25
-  smoothSpeed: 0.1
-  movementThreshold: 0.0005
   exitGameMenu: {fileID: 808287990}
   mainCamera: {fileID: 147836200}
-  videoScreen: {fileID: 387736220}
-  handLandmarkerModel: {fileID: 4900000, guid: b467f87f6b5d4d200974b3ca14f53987, type: 3}
-  width: 1280
-  height: 720
-  fps: 30
+  handGestureDetector: {fileID: 0}
 --- !u!1001 &9162822085232700304
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -6,8 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/Lake.unity
+    guid: 33bd643f4b4dac54286ef3a9433dd0ad
+  - enabled: 1
+    path: Assets/Scenes/Hand Landmark Detection/Hand Landmark Detection.unity
+    guid: 98d49dcfe667ea822a91d6b74f7cb2e9
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6519c726079102e4499639dd918e5a29,
       type: 2}

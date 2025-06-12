@@ -9,30 +9,41 @@ using AI.Assistant.Data;
 
 namespace AI.Assistant.API
 { 
+  /// <summary>
+    /// APIManager 负责与AI后端接口通信，发送用户消息并获取AI回复，支持上下文记忆
+    /// </summary>
     public class APIManager : Singleton<APIManager>
     {
         #region 配置参数
         [Header("API Settings")]
-        public string siliconEndpoint = "https://api.siliconflow.cn/v1/chat/completions";
-        public string siliconApiKey = "sk-ylgalqevviwxjblnpuzqxfgmvujzgajxfsolvqzuhckrlxmz";
-        public string siliconModel = "Pro/deepseek-ai/DeepSeek-V3";
-        public bool enableThinking = true;
-        public int thinkingBudget = 4096;
-        public float minP = 0.05f;
-        public float temperature = 0.7f;
-        public float topP = 0.7f;
-        public int topK = 50;
-        public float frequencyPenalty = 0.5f;
-        public int n = 1;
-        public string[] stop = new string[0];
-        public int maxTokens = 1000;
-        public bool showDebugLogs = true;
+        public string siliconEndpoint = "https://api.siliconflow.cn/v1/chat/completions"; // API接口地址
+        public string siliconApiKey = "sk-ylgalqevviwxjblnpuzqxfgmvujzgajxfsolvqzuhckrlxmz"; // API密钥
+        public string siliconModel = "Pro/deepseek-ai/DeepSeek-V3"; // 使用的AI模型
+        public bool enableThinking = true; // 是否启用思考模式
+        public int thinkingBudget = 4096; // 思考预算
+        public float minP = 0.05f; // 最小概率
+        public float temperature = 0.7f; // 采样温度
+        public float topP = 0.7f; // top-p采样
+        public int topK = 50; // top-k采样
+        public float frequencyPenalty = 0.5f; // 频率惩罚
+        public int n = 1; // 返回结果数量
+        public string[] stop = new string[0]; // 停止词
+        public int maxTokens = 1000; // 最大token数
+        public bool showDebugLogs = true; // 是否显示调试日志
         #endregion
 
-        #region 文本对话API
+        // 聊天历史，便于上下文记忆
+        private AIChatHistory chatHistory = new AIChatHistory();
+
         // 日志前缀
         private const string LOG_PREFIX = "[AI API]";
 
+        /// <summary>
+        /// 发送文本消息到AI接口，获取AI回复（带上下文）
+        /// </summary>
+        /// <param name="message">用户输入的消息</param>
+        /// <param name="onResponse">AI回复回调</param>
+        /// <param name="onError">错误回调</param>
         public void SendTextMessage(string message, Action<string> onResponse, Action<string> onError = null)
         {
             Debug.Log($"{LOG_PREFIX} 开始处理用户消息: {message}");
@@ -46,19 +57,48 @@ namespace AI.Assistant.API
             StartCoroutine(SendTextMessageCoroutine(message, onResponse, onError));
         }
 
+        /// <summary>
+        /// 协程方式发送文本消息到AI接口
+        /// </summary>
+        /// <param name="message">用户输入的消息</param>
+        /// <param name="onResponse">AI回复回调</param>
+        /// <param name="onError">错误回调</param>
         private IEnumerator SendTextMessageCoroutine(string message, Action<string> onResponse, Action<string> onError)
         {
             Debug.Log($"{LOG_PREFIX} 准备请求参数 - 模型: {siliconModel}, 温度: {temperature}, 最大token数: {maxTokens}");
 
+            // 1. 构建消息列表（system prompt + 历史 + 当前用户消息）
+            List<AIMessage> messages = new()
+            {
+                // system prompt
+                new AIMessage
+                {
+                    role = "system",
+                    content = "你每次回复大约在100字，语气轻快活泼，需要在对话末尾为用户提供三个选项，" +
+                    "用户会选择其中一个来推动对话（选项约10到15字，不计入正文字数）"
+                },
+                new AIMessage
+                {
+                    role = "system",
+                    content = ""
+                }
+            };
+
+            // 添加历史消息（如最近5条）
+            messages.AddRange(chatHistory.GetRecent(10));
+
+            // 当前用户消息
+            messages.Add(new AIMessage
+            {
+                role = "user",
+                content = message
+            });
+
+            // 2. 构建请求数据
             var requestData = new AIRequest
             {
                 model = siliconModel,
-                messages = new[] {
-                    new AIMessage {
-                        role = "user",
-                        content = message
-                    }
-                },
+                messages = messages.ToArray(),
                 stream = false,
                 max_tokens = maxTokens,
                 enable_thinking = enableThinking,
@@ -72,6 +112,7 @@ namespace AI.Assistant.API
                 stop = stop
             };
 
+            // 3. 序列化为JSON
             string jsonData = JsonUtility.ToJson(requestData);
             Debug.Log($"{LOG_PREFIX} 请求JSON数据: {jsonData}");
 
@@ -90,6 +131,7 @@ namespace AI.Assistant.API
 
             Debug.Log($"{LOG_PREFIX} 请求完成，状态: {request.result}, 响应码: {request.responseCode}");
 
+            // 检查请求结果
             if (request.result != UnityWebRequest.Result.Success)
             {
                 string errorMsg = $"{LOG_PREFIX} 请求失败: {request.error}";
@@ -98,15 +140,19 @@ namespace AI.Assistant.API
                 yield break;
             }
 
+            // 获取响应内容
             string responseJson = request.downloadHandler.text;
             Debug.Log($"{LOG_PREFIX} 收到原始响应: {responseJson}");
 
             try
             {
+                // 解析AI响应
                 var response = JsonUtility.FromJson<AIResponse>(responseJson);
                 if (response.choices != null && response.choices.Length > 0)
                 {
                     string contentText = response.choices[0].message.content;
+                    // 把AI回复加入历史
+                    chatHistory.Add("assistant", contentText);
                     Debug.Log($"{LOG_PREFIX} 解析成功，AI回复内容: {contentText}");
                     onResponse?.Invoke(contentText);
                 }
@@ -125,5 +171,4 @@ namespace AI.Assistant.API
             }
         }
     }
-        #endregion
 }

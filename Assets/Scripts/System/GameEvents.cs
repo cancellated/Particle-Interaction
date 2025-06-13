@@ -75,4 +75,24 @@ public static class GameEvents
         OnHandGestureEnded?.Invoke(data);
     }
     #endregion
+
+    #region 玩家状态切换事件
+    // 上下船事件
+    public static event Action OnEmbark;      // 上船
+    public static event Action OnDisembark;   // 下船
+
+    public static void TriggerEmbark()
+    {
+        Debug.Log("[GameEvents] 触发上船事件");
+        OnEmbark?.Invoke();
+    }
+
+    public static void TriggerDisembark()
+    {
+        Debug.Log("[GameEvents] 触发下船事件");
+        OnDisembark?.Invoke();
+    }
+
+
+    #endregion
 }

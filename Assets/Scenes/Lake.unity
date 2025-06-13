@@ -305,7 +305,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 006c2580efc0ff74588afd01d5cb7585,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 18.81
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 006c2580efc0ff74588afd01d5cb7585,
         type: 3}
@@ -2410,7 +2410,7 @@ PrefabInstance:
     - target: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.06
+      value: 16.13
       objectReference: {fileID: 0}
     - target: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
@@ -2745,6 +2745,7 @@ GameObject:
   - component: {fileID: 1296373677}
   - component: {fileID: 1296373680}
   - component: {fileID: 1296373676}
+  - component: {fileID: 1296373681}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -2910,6 +2911,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 176105566}
   spawnPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &1296373681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296373675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dea1f12194d27364c919e2ede01d1422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiPanel: {fileID: 220745367}
+  player: {fileID: 176105566}
+  firstPersonController: {fileID: 0}
+  uiIsActive: 0
 --- !u!1001 &1306128867
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -214,4 +214,31 @@ public class AIChat : MonoBehaviour
         OptionGroups.gameObject.SetActive(active);
     }
     #endregion
+    void Update()
+    {
+        // 只有在对话界面激活且选项组激活时才响应按键
+        if (ChatGroup.gameObject.activeSelf && OptionGroups.gameObject.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                option1Button.onClick.Invoke();
+                return;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                option2Button.onClick.Invoke();
+                return;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                option3Button.onClick.Invoke();
+                return;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                endButton.onClick.Invoke();
+                return;
+            }
+        }
+    }
 }

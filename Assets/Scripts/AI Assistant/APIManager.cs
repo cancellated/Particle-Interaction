@@ -206,6 +206,7 @@ namespace AI.Assistant.API
         {
             chatHistory.Clear();
         }
+       
         #endregion
 
     }

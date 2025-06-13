@@ -17,7 +17,7 @@ namespace AI.Assistant.API
         #region 配置参数
         [Header("API Settings")]
         public string siliconEndpoint = "https://api.siliconflow.cn/v1/chat/completions"; // API接口地址
-        public string siliconApiKey = "sk-ylgalqevviwxjblnpuzqxfgmvujzgajxfsolvqzuhckrlxmz"; // API密钥
+        public string siliconApiKey = "sk-vtbzltihxyjgxcadqdczrzrhimrpxaxuzoeryljzbxtorrbs"; // API密钥
         public string siliconModel = "deepseek-ai/DeepSeek-V3"; // 使用的AI模型
         public bool enableThinking = true; // 是否启用思考模式
         public int thinkingBudget = 4096; // 思考预算
@@ -115,7 +115,7 @@ namespace AI.Assistant.API
             var requestData = new AIRequest
             {
                 model = siliconModel,
-                messages = chatHistory.GetRecent(10),
+                messages = messages.ToArray(),
                 stream = false,
                 max_tokens = maxTokens,
                 enable_thinking = enableThinking,
@@ -143,6 +143,9 @@ namespace AI.Assistant.API
             request.SetRequestHeader("Content-Type", "application/json");
             request.SetRequestHeader("Authorization", $"Bearer {siliconApiKey}");
 
+            // 打印请求头
+            Debug.Log($"{LOG_PREFIX} 请求头: Content-Type=application/json");
+            Debug.Log($"{LOG_PREFIX} 请求头: Authorization=Bearer {siliconApiKey}");
             Debug.Log($"{LOG_PREFIX} 正在发送请求到: {siliconEndpoint}");
             yield return request.SendWebRequest();
 

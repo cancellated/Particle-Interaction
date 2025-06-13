@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using AI.Assistant.Data; 
+using AI.Assistant.Data;
+using StarterAssets;
 
 
 /// <summary>
@@ -12,6 +13,7 @@ public class AIChat : MonoBehaviour
     #region 参数配置
     [Header("UI组件")]
     public CanvasGroup ChatGroup; //对话系统UI界面
+    public CanvasGroup OptionGroups; //选项
     public Text dialogueText; // 显示AI回复文本
     public Button option1Button; // 选项1按钮
     public Button option2Button; // 选项2按钮
@@ -23,8 +25,10 @@ public class AIChat : MonoBehaviour
     private Coroutine typingCoroutine; // 当前打字协程
     private bool isTyping = false;     // 是否正在打字
     private AIJsonReply currentReply;  // 当前AI回复数据
-    [Header("玩家控制器")]
-    public GameObject playerController;
+    [Header("玩家输入")]
+    public Player playerInput;
+
+    public StarterAssetsInputs starterAssetsInputs;
     #endregion
 
     #region 生命周期管理
@@ -38,13 +42,13 @@ public class AIChat : MonoBehaviour
         ChatGroup.gameObject.SetActive(false);  //初始隐藏
     }
 
-    void OnEnable()
+    void Awake()
     {
         GameEvents.OnAIDialogueStart += HandleDialogueStart;
         GameEvents.OnAIDialogueResponse += HandleDialogueResponse;
     }
 
-    void OnDisable()
+    void OnDestroy()
     {
         GameEvents.OnAIDialogueStart -= HandleDialogueStart;
         GameEvents.OnAIDialogueResponse -= HandleDialogueResponse;
@@ -58,12 +62,54 @@ public class AIChat : MonoBehaviour
     private void HandleDialogueStart()
     {
         ChatGroup.gameObject.SetActive(true);
-        if (playerController != null)
-            playerController.SetActive(false);
+        OptionGroups.gameObject.SetActive(false);
 
+        if (playerInput != null)
+        {
+            playerInput.GamePlay.Disable();
+            playerInput.Menu.Enable();
+
+            // 进入对话时
+            // if (playerInput != null)
+            // {
+            //     playerInput.GamePlay.Disable();
+            //     playerInput.Menu.Enable();
+            // }
+            // Cursor.lockState = CursorLockMode.None;
+            // Cursor.visible = true;
+
+            // 禁用第一人称控制器脚本
+            if (starterAssetsInputs != null)
+            {
+                starterAssetsInputs.enabled = false;
+            }
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+
+
+            // 结束对话时
+            // if (playerInput != null)
+            // {
+            //     playerInput.Menu.Disable();
+            //     playerInput.GamePlay.Enable();
+            // }
+            // Cursor.lockState = CursorLockMode.Locked;
+            // Cursor.visible = false;
+
+            // 启用第一人称控制器脚本
+            if (starterAssetsInputs != null)
+            {
+                starterAssetsInputs.enabled = true;
+            }
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
+
+    
 
     /// <summary>
     /// 处理AI回复事件，解析JSON并启动打字机效果
@@ -116,12 +162,12 @@ public class AIChat : MonoBehaviour
     private void OnEndDialogue()
     {
         ChatGroup.gameObject.SetActive(false);
-        // 通过事件系统通知结束并恢复第一人称控制器
         GameEvents.TriggerAIDialogueComplete();
-        ChatGroup.gameObject.SetActive(false);
-        if (playerController != null)
-            playerController.SetActive(true);
-
+        if (playerInput != null)
+        {
+            playerInput.Menu.Disable();
+            playerInput.GamePlay.Enable();
+        }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -165,10 +211,7 @@ public class AIChat : MonoBehaviour
     /// </summary>
     private void SetOptionsActive(bool active)
     {
-        option1Button.gameObject.SetActive(active);
-        option2Button.gameObject.SetActive(active);
-        option3Button.gameObject.SetActive(active);
-        endButton.gameObject.SetActive(active);
+        OptionGroups.gameObject.SetActive(active);
     }
     #endregion
 }

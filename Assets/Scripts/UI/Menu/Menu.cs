@@ -4,9 +4,16 @@ using UnityEngine.UI;
 namespace UI.Menu {
     public class Menu : MonoBehaviour
     {
+        #region 参数配置
         public GameObject menuUI; // 菜单UI面板
         public Player playerInput; // Player输入系统实例
+        #endregion
 
+        #region 生命周期管理
+        private void Start()
+        {
+            OnMenuSet(false);
+        }
         void OnEnable()
         {
             GameEvents.OnMenuSet += OnMenuSet;
@@ -16,7 +23,9 @@ namespace UI.Menu {
         {
             GameEvents.OnMenuSet -= OnMenuSet;
         }
+        #endregion
 
+        #region 事件响应
         /// <summary>
         /// 根据事件参数显示或隐藏菜单
         /// </summary>
@@ -40,13 +49,6 @@ namespace UI.Menu {
                 }
             }
         }
-
-        /// <summary>
-        /// 返回游戏按钮调用，隐藏菜单
-        /// </summary>
-        public void HideMenu()
-        {
-            GameEvents.TriggerMenuSet(false);
-        }
+        #endregion
     }
 }

@@ -22,15 +22,10 @@ namespace Boat.Embark
         private bool onBoat = false;
 
         // 输入系统实例
-        private Player inputActions;
+        private Player inputActions = new();
         #endregion
 
         #region 生命周期管理
-        void Awake()
-        {
-            // 初始化输入系统
-            inputActions = new Player();
-        }
 
         void OnEnable()
         {

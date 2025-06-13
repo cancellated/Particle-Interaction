@@ -9,12 +9,27 @@ public static class GameEvents
 {
     #region 游戏事件
     public static event Action OnGameReset;
+    public static event Action<bool> OnMenuSet;
+    public static event Action<bool> OnLoading;
     
     // 触发游戏重置事件
     public static void TriggerGameReset()
     {
         Debug.Log("[GameEvents] 触发游戏重置事件");
         OnGameReset?.Invoke();
+    }
+
+    //触发菜单弹出事件
+    public static void TriggerMenuSet(bool set)
+    {
+        Debug.Log("[GameEvents] 触发菜单显隐事件");
+        OnMenuSet?.Invoke(set); 
+    }
+
+    public static void TriggerLoading(bool loading)
+    {
+        Debug.Log("[GameEvents] 触发加载事件");
+        OnMenuSet?.Invoke(loading);
     }
     #endregion
 

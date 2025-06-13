@@ -7,6 +7,7 @@ public class GameManager : Singleton<GameManager>
     public GameObject playerPrefab;
     public Vector3 spawnPosition;
 
+    #region 生命周期管理
     protected override void Awake()
     {
         base.Awake();
@@ -20,6 +21,9 @@ public class GameManager : Singleton<GameManager>
         GameEvents.OnGameReset -= HandleGameReset;
     }
 
+    #endregion
+
+    #region 事件处理
     public void ResetGame()
     {
         // 触发游戏重置事件
@@ -36,4 +40,6 @@ public class GameManager : Singleton<GameManager>
         // 重新生成玩家
         Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
     }
+
+    #endregion
 }

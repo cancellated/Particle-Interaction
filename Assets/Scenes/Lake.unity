@@ -738,6 +738,7 @@ MonoBehaviour:
   option3Button: {fileID: 1923929905}
   endButton: {fileID: 1781509975801069713}
   typingSpeed: 0.05
+  playerController: {fileID: 176105566}
 --- !u!225 &391234967
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1645,7 +1646,7 @@ PrefabInstance:
     - target: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
       propertyPath: m_Name
-      value: PlayerCapsule
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
@@ -1985,6 +1986,7 @@ GameObject:
   - component: {fileID: 1296373679}
   - component: {fileID: 1296373678}
   - component: {fileID: 1296373677}
+  - component: {fileID: 1296373680}
   - component: {fileID: 1296373676}
   m_Layer: 0
   m_Name: Managers
@@ -2137,6 +2139,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1296373680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296373675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 524b8204568c68449896dd2574f76df1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 176105566}
+  spawnPosition: {x: 0, y: 0, z: 0}
 --- !u!1001 &1306128867
 PrefabInstance:
   m_ObjectHideFlags: 0

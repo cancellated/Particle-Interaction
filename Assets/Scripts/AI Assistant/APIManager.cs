@@ -98,7 +98,6 @@ namespace AI.Assistant.API
                     content = "你收到的消息中，role为user的消息为当前消息，role为assistant的为历史消息，请结合历史消息和当前消息回复。"
 
                 }
-
             
             };
 

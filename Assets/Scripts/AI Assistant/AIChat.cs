@@ -23,6 +23,8 @@ public class AIChat : MonoBehaviour
     private Coroutine typingCoroutine; // 当前打字协程
     private bool isTyping = false;     // 是否正在打字
     private AIJsonReply currentReply;  // 当前AI回复数据
+    [Header("玩家控制器")]
+    public GameObject playerController;
     #endregion
 
     #region 生命周期管理
@@ -38,18 +40,31 @@ public class AIChat : MonoBehaviour
 
     void OnEnable()
     {
-        // 订阅AI回复事件
+        GameEvents.OnAIDialogueStart += HandleDialogueStart;
         GameEvents.OnAIDialogueResponse += HandleDialogueResponse;
     }
 
     void OnDisable()
     {
-        // 取消订阅AI回复事件
+        GameEvents.OnAIDialogueStart -= HandleDialogueStart;
         GameEvents.OnAIDialogueResponse -= HandleDialogueResponse;
     }
     #endregion
 
-    #region 解析AI回复并打出文字
+    #region 事件处理
+    /// <summary>
+    /// 对话开始时禁用玩家控制器并解锁光标
+    /// </summary>
+    private void HandleDialogueStart()
+    {
+        ChatGroup.gameObject.SetActive(true);
+        if (playerController != null)
+            playerController.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     /// <summary>
     /// 处理AI回复事件，解析JSON并启动打字机效果
     /// </summary>
@@ -85,6 +100,34 @@ public class AIChat : MonoBehaviour
             typingCoroutine = StartCoroutine(TypeText(message, typingSpeed, null));
         }
     }
+    /// <summary>
+    /// 选项按钮点击事件，发送选项内容到AI
+    /// </summary>
+    private void OnOptionSelected(string optionText)
+    {
+        SetOptionsActive(false);
+        // 通过事件系统发送用户选项
+        GameEvents.TriggerAIDialogueSend(optionText);
+    }
+
+    /// <summary>
+    /// 结束按钮点击事件，通知对话结束
+    /// </summary>
+    private void OnEndDialogue()
+    {
+        ChatGroup.gameObject.SetActive(false);
+        // 通过事件系统通知结束并恢复第一人称控制器
+        GameEvents.TriggerAIDialogueComplete();
+        ChatGroup.gameObject.SetActive(false);
+        if (playerController != null)
+            playerController.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+    #endregion
+
+    #region 解析AI回复并打出文字
 
     /// <summary>
     /// 打字机效果显示文本，结束后显示选项
@@ -126,28 +169,6 @@ public class AIChat : MonoBehaviour
         option2Button.gameObject.SetActive(active);
         option3Button.gameObject.SetActive(active);
         endButton.gameObject.SetActive(active);
-    }
-    #endregion
-
-    #region 事件处理
-    /// <summary>
-    /// 选项按钮点击事件，发送选项内容到AI
-    /// </summary>
-    private void OnOptionSelected(string optionText)
-    {
-        SetOptionsActive(false);
-        // 通过事件系统发送用户选项
-        GameEvents.TriggerAIDialogueSend(optionText);
-    }
-
-    /// <summary>
-    /// 结束按钮点击事件，通知对话结束
-    /// </summary>
-    private void OnEndDialogue()
-    {
-        ChatGroup.gameObject.SetActive(false);
-        // 通过事件系统通知结束
-        GameEvents.TriggerAIDialogueComplete();
     }
     #endregion
 }
